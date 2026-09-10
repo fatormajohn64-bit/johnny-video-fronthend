@@ -1,24 +1,21 @@
-/* ========================================
-   Johnny Tec OS
-   Main Application Router
-======================================== */
-
 const mainScreen =
   document.getElementById("main-screen");
-
-/*
-|--------------------------------------------------------------------------
-| Pages
-|--------------------------------------------------------------------------
-*/
 
 const pages = {
   home: {
     html: "./pages/home.html",
     css: "./css/home.css",
-    js: "./home.js"
+    js: "./js/home.js"
+  },
+
+  generator: {
+    html: "./pages/generator.html",
+    css: "./css/generator.css",
+    js: "./js/generator.js"
   }
 };
+
+let currentPage = null;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,13 +25,29 @@ const pages = {
 
 async function loadPage(pageName) {
   const page =
-    pages[pageName];
+    pages[pageName] || pages.home;
 
-  if (!page) {
-    return loadPage("home");
-  }
+  const actualPageName =
+    pages[pageName]
+      ? pageName
+      : "home";
 
   try {
+    /*
+     * Remove previous page CSS
+     */
+    removePageCss();
+
+    /*
+     * Load page CSS
+     */
+    await loadPageCss(
+      page.css
+    );
+
+    /*
+     * Load page HTML
+     */
     const response =
       await fetch(page.html);
 
@@ -47,9 +60,18 @@ async function loadPage(pageName) {
     const html =
       await response.text();
 
-    mainScreen.innerHTML = html;
+    mainScreen.innerHTML =
+      html;
 
-    await loadScript(page.js);
+    /*
+     * Load page JavaScript
+     */
+    await loadScript(
+      page.js
+    );
+
+    currentPage =
+      actualPageName;
 
   } catch (error) {
     console.error(
@@ -57,8 +79,11 @@ async function loadPage(pageName) {
       error
     );
 
+    removePageCss();
+
     mainScreen.innerHTML = `
       <section class="app-error">
+
         <div class="error-icon">
           ⚠️
         </div>
@@ -68,7 +93,9 @@ async function loadPage(pageName) {
         </h1>
 
         <p>
-          ${error.message}
+          ${escapeHtml(
+            error.message
+          )}
         </p>
 
         <button
@@ -77,35 +104,114 @@ async function loadPage(pageName) {
         >
           Try Again
         </button>
+
       </section>
     `;
 
     document
-      .getElementById("retry-button")
+      .getElementById(
+        "retry-button"
+      )
       ?.addEventListener(
         "click",
-        () => loadPage(pageName)
+        () => {
+          loadPage(
+            actualPageName
+          );
+        }
       );
   }
 }
 
 /*
 |--------------------------------------------------------------------------
-| Load JavaScript module
+| Load page CSS
 |--------------------------------------------------------------------------
 */
 
-async function loadScript(path) {
+function loadPageCss(
+  path
+) {
+  return new Promise(
+    (resolve, reject) => {
+      const link =
+        document.createElement(
+          "link"
+        );
+
+      link.rel = "stylesheet";
+      link.href = path;
+
+      link.dataset.pageCss =
+        "true";
+
+      link.onload = () => {
+        resolve();
+      };
+
+      link.onerror = () => {
+        reject(
+          new Error(
+            `Failed to load ${path}`
+          )
+        );
+      };
+
+      document.head.appendChild(
+        link
+      );
+    }
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Remove previous page CSS
+|--------------------------------------------------------------------------
+*/
+
+function removePageCss() {
+  document
+    .querySelectorAll(
+      'link[data-page-css="true"]'
+    )
+    .forEach(link => {
+      link.remove();
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| Load page JavaScript
+|--------------------------------------------------------------------------
+*/
+
+async function loadScript(
+  path
+) {
   const module =
     await import(
       `${path}?t=${Date.now()}`
     );
 
+  /*
+   * Home page
+   */
   if (
     typeof module.initHome ===
     "function"
   ) {
     await module.initHome();
+  }
+
+  /*
+   * Generator page
+   */
+  if (
+    typeof module.initGenerator ===
+    "function"
+  ) {
+    await module.initGenerator();
   }
 }
 
@@ -124,12 +230,21 @@ async function router() {
   const page =
     hash || "home";
 
+  /*
+   * Avoid reloading the same page
+   */
+  if (
+    page === currentPage
+  ) {
+    return;
+  }
+
   await loadPage(page);
 }
 
 /*
 |--------------------------------------------------------------------------
-| Navigation
+| Hash navigation
 |--------------------------------------------------------------------------
 */
 
@@ -145,3 +260,33 @@ window.addEventListener(
 */
 
 router();
+
+/*
+|--------------------------------------------------------------------------
+| HTML escaping
+|--------------------------------------------------------------------------
+*/
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+}
