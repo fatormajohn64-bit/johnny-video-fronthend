@@ -1,0 +1,136 @@
+/* ========================================
+   Johnny Tec OS
+   Home Screen
+======================================== */
+
+.home-placeholder {
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+
+  text-align: center;
+}
+
+.home-placeholder h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.home-placeholder p {
+  margin-top: 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 16px;
+}
+
+.home-status {
+  margin-top: 24px;
+
+  padding: 12px 18px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+
+  background: var(--bg-card);
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+}
+
+/* ========================================
+   Loading
+======================================== */
+
+.app-loading {
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+
+  border: 3px solid var(--border);
+  border-top-color: var(--text-primary);
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   Error
+======================================== */
+
+.app-error {
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.app-error h1 {
+  font-size: 24px;
+}
+
+.app-error p {
+  max-width: 320px;
+
+  margin-top: 10px;
+
+  color: var(--text-secondary);
+
+  line-height: 1.5;
+}
+
+.app-error button {
+  margin-top: 24px;
+
+  padding: 13px 24px;
+
+  border-radius: 14px;
+
+  background: var(--accent);
+  color: #000;
+
+  font-weight: 600;
+}
+
+.app-error button:active {
+  transform: scale(0.97);
+}
