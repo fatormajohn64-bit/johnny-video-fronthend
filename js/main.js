@@ -1,80 +1,74 @@
 /* ========================================
    Johnny Tec OS
-   Main Application
+   Main Application Router
 ======================================== */
 
-import {
-  checkHealth,
-  getProviders
-} from "./api.js";
+const mainScreen =
+  document.getElementById("main-screen");
 
 /*
 |--------------------------------------------------------------------------
-| Application
+| Pages
 |--------------------------------------------------------------------------
 */
 
-async function startApp() {
-  const mainScreen =
-    document.getElementById("main-screen");
+const pages = {
+  home: {
+    html: "./pages/home.html",
+    css: "./css/home.css",
+    js: "./home.js"
+  }
+};
 
-  if (!mainScreen) {
-    console.error(
-      "Main screen element not found."
-    );
+/*
+|--------------------------------------------------------------------------
+| Load page
+|--------------------------------------------------------------------------
+*/
 
-    return;
+async function loadPage(pageName) {
+  const page =
+    pages[pageName];
+
+  if (!page) {
+    return loadPage("home");
   }
 
-  mainScreen.innerHTML = `
-    <section class="app-loading">
-      <div class="loading-spinner"></div>
-
-      <p>
-        Starting Johnny Tec OS...
-      </p>
-    </section>
-  `;
-
   try {
-    const health =
-      await checkHealth();
+    const response =
+      await fetch(page.html);
 
-    console.log(
-      "Backend:",
-      health
-    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load ${page.html}`
+      );
+    }
 
-    const providers =
-      await getProviders();
+    const html =
+      await response.text();
 
-    console.log(
-      "Providers:",
-      providers
-    );
+    mainScreen.innerHTML = html;
 
-    await loadHome();
+    await loadScript(page.js);
 
   } catch (error) {
     console.error(
-      "Application startup failed:",
+      "Page loading error:",
       error
     );
 
     mainScreen.innerHTML = `
       <section class="app-error">
-
         <div class="error-icon">
           ⚠️
         </div>
 
         <h1>
-          Backend unavailable
+          Page failed to load
         </h1>
 
         <p>
-          Johnny Tec OS could not connect
-          to the video backend.
+          ${error.message}
         </p>
 
         <button
@@ -83,7 +77,6 @@ async function startApp() {
         >
           Try Again
         </button>
-
       </section>
     `;
 
@@ -91,48 +84,64 @@ async function startApp() {
       .getElementById("retry-button")
       ?.addEventListener(
         "click",
-        startApp
+        () => loadPage(pageName)
       );
   }
 }
 
 /*
 |--------------------------------------------------------------------------
-| Home
+| Load JavaScript module
 |--------------------------------------------------------------------------
 */
 
-async function loadHome() {
-  const mainScreen =
-    document.getElementById("main-screen");
+async function loadScript(path) {
+  const module =
+    await import(
+      `${path}?t=${Date.now()}`
+    );
 
-  if (!mainScreen) {
-    return;
+  if (
+    typeof module.initHome ===
+    "function"
+  ) {
+    await module.initHome();
   }
-
-  mainScreen.innerHTML = `
-    <section class="home-placeholder">
-
-      <h1>
-        Johnny Tec OS
-      </h1>
-
-      <p>
-        Video Studio
-      </p>
-
-      <div class="home-status">
-        Backend connected ✓
-      </div>
-
-    </section>
-  `;
 }
 
 /*
 |--------------------------------------------------------------------------
-| Start
+| Router
 |--------------------------------------------------------------------------
 */
 
-startApp();
+async function router() {
+  const hash =
+    window.location.hash
+      .replace("#", "")
+      .trim();
+
+  const page =
+    hash || "home";
+
+  await loadPage(page);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Navigation
+|--------------------------------------------------------------------------
+*/
+
+window.addEventListener(
+  "hashchange",
+  router
+);
+
+/*
+|--------------------------------------------------------------------------
+| Start application
+|--------------------------------------------------------------------------
+*/
+
+router();
