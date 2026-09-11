@@ -1,0 +1,144 @@
+<section class="editor-page">
+
+  <header class="page-header">
+
+    <button
+      id="back-home"
+      class="back-button"
+      type="button"
+      aria-label="Back"
+    >
+      ←
+    </button>
+
+    <div>
+      <span class="page-label">
+        VIDEO EDITOR
+      </span>
+
+      <h1>
+        Edit Video
+      </h1>
+    </div>
+
+  </header>
+
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Video source
+  |--------------------------------------------------------------------------
+  -->
+
+  <section class="editor-section">
+
+    <label class="section-title">
+      Video
+    </label>
+
+    <div
+      id="video-source"
+      class="video-source"
+    >
+
+      <div
+        id="video-source-empty"
+        class="video-source-empty"
+      >
+        No video selected
+      </div>
+
+      <video
+        id="editor-video-preview"
+        class="hidden"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
+
+    </div>
+
+    <button
+      id="choose-video"
+      class="secondary-button"
+      type="button"
+    >
+      Choose Video
+    </button>
+
+    <input
+      id="video-file"
+      type="file"
+      accept="video/*"
+      hidden
+    >
+
+  </section>
+
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Editor provider
+  |--------------------------------------------------------------------------
+  -->
+
+  <section class="editor-section">
+
+    <label class="section-title">
+      Choose Editor
+    </label>
+
+    <div
+      id="editor-providers"
+      class="editor-providers"
+    ></div>
+
+  </section>
+
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Editor settings
+  |--------------------------------------------------------------------------
+  -->
+
+  <section
+    id="editor-settings"
+    class="editor-section"
+  >
+  </section>
+
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  -->
+
+  <button
+    id="render-video-button"
+    class="render-button"
+    type="button"
+  >
+    <span>
+      Render Video
+    </span>
+
+    <span>
+      →
+    </span>
+  </button>
+
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Status
+  |--------------------------------------------------------------------------
+  -->
+
+  <section
+    id="editor-status"
+    class="editor-status hidden"
+  ></section>
+
+</section>
