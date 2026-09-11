@@ -3,7 +3,7 @@
   <header class="page-header">
 
     <button
-      id="back-generator"
+      id="back-home"
       class="back-button"
       type="button"
       aria-label="Back"
@@ -13,7 +13,7 @@
 
     <div>
       <span class="page-label">
-        GENERATED VIDEO
+        VIDEO RESULT
       </span>
 
       <h1>
@@ -23,60 +23,175 @@
 
   </header>
 
-  <section class="video-preview">
 
-    <video
-      id="generated-video"
-      controls
-      playsinline
-      preload="metadata"
-    ></video>
+  <!--
+  |--------------------------------------------------------------------------
+  | Video
+  |--------------------------------------------------------------------------
+  -->
+
+  <section class="result-video-section">
+
+    <div
+      id="result-video-container"
+      class="result-video-container"
+    >
+
+      <div
+        id="result-loading"
+        class="result-loading"
+      >
+
+        <div class="result-spinner"></div>
+
+        <strong>
+          Processing video...
+        </strong>
+
+        <small id="result-status-text">
+          Please wait while your video is rendered.
+        </small>
+
+      </div>
+
+      <video
+        id="result-video"
+        class="hidden"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
+
+    </div>
 
   </section>
 
-  <section class="result-info">
 
-    <div class="result-row">
-      <span>Generator</span>
-      <strong id="result-generator">
+  <!--
+  |--------------------------------------------------------------------------
+  | Result information
+  |--------------------------------------------------------------------------
+  -->
+
+  <section
+    id="result-info"
+    class="result-info hidden"
+  >
+
+    <div class="result-info-row">
+
+      <span>
+        Provider
+      </span>
+
+      <strong
+        id="result-provider"
+      >
         —
       </strong>
+
     </div>
 
-    <div class="result-row">
-      <span>Status</span>
-      <strong id="result-status">
+    <div class="result-info-row">
+
+      <span>
+        Status
+      </span>
+
+      <strong
+        id="result-state"
+      >
         —
       </strong>
+
     </div>
 
   </section>
 
-  <section class="result-actions">
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Actions
+  |--------------------------------------------------------------------------
+  -->
+
+  <section
+    id="result-actions"
+    class="result-actions hidden"
+  >
 
     <button
       id="download-video"
       class="result-button primary"
       type="button"
     >
-      <span>Download Video</span>
-      <span>↓</span>
+      <span>
+        Download Video
+      </span>
+
+      <span>
+        ↓
+      </span>
     </button>
 
     <button
-      id="edit-generated-video"
-      class="result-button"
+      id="edit-result"
+      class="result-button secondary"
       type="button"
     >
-      <span>Edit Video</span>
-      <span>→</span>
+      <span>
+        Edit This Video
+      </span>
+
+      <span>
+        ✂️
+      </span>
+    </button>
+
+    <button
+      id="generate-another"
+      class="result-button secondary"
+      type="button"
+    >
+      <span>
+        Generate Another
+      </span>
+
+      <span>
+        +
+      </span>
     </button>
 
   </section>
 
-  <div
-    id="result-message"
-    class="result-message hidden"
-  ></div>
+
+  <!--
+  |--------------------------------------------------------------------------
+  | Error
+  |--------------------------------------------------------------------------
+  -->
+
+  <section
+    id="result-error"
+    class="result-error hidden"
+  >
+
+    <strong>
+      Video processing failed
+    </strong>
+
+    <p id="result-error-message">
+      Something went wrong.
+    </p>
+
+    <button
+      id="retry-result"
+      class="result-button secondary"
+      type="button"
+    >
+      Try Again
+    </button>
+
+  </section>
 
 </section>
