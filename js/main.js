@@ -5,19 +5,19 @@ const pages = {
   home: {
     html: "./pages/home.html",
     css: "./css/home.css",
-    js: "./js/home.js"
+    js: "./home.js"
   },
 
   generator: {
     html: "./pages/generator.html",
     css: "./css/generator.css",
-    js: "./js/generator.js"
+    js: "./generator.js"
   },
 
   result: {
     html: "./pages/result.html",
     css: "./css/result.css",
-    js: "./js/result.js"
+    js: "./result.js"
   }
 };
 
@@ -45,7 +45,7 @@ async function loadPage(pageName) {
     removePageCss();
 
     /*
-     * Load current page CSS
+     * Load page CSS
      */
     await loadPageCss(
       page.css
@@ -196,6 +196,15 @@ function removePageCss() {
 */
 
 async function loadScript(path) {
+  /*
+   * main.js is already inside /js/
+   *
+   * Therefore:
+   * ./home.js
+   * ./generator.js
+   * ./result.js
+   */
+
   const module =
     await import(
       `${path}?t=${Date.now()}`
@@ -261,7 +270,7 @@ async function router() {
 
 /*
 |--------------------------------------------------------------------------
-| Navigation
+| Hash navigation
 |--------------------------------------------------------------------------
 */
 
