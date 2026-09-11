@@ -18,6 +18,12 @@ const pages = {
     html: "./pages/result.html",
     css: "./css/result.css",
     js: "./result.js"
+  },
+
+  editor: {
+    html: "./pages/editor.html",
+    css: "./css/editor.css",
+    js: "./editor.js"
   }
 };
 
@@ -45,7 +51,7 @@ async function loadPage(pageName) {
     removePageCss();
 
     /*
-     * Load page CSS
+     * Load current page CSS
      */
     await loadPageCss(
       page.css
@@ -199,10 +205,12 @@ async function loadScript(path) {
   /*
    * main.js is already inside /js/
    *
-   * Therefore:
+   * Therefore paths are:
+   *
    * ./home.js
    * ./generator.js
    * ./result.js
+   * ./editor.js
    */
 
   const module =
@@ -238,6 +246,16 @@ async function loadScript(path) {
     "function"
   ) {
     await module.initResult();
+  }
+
+  /*
+   * Editor
+   */
+  if (
+    typeof module.initEditor ===
+    "function"
+  ) {
+    await module.initEditor();
   }
 }
 
