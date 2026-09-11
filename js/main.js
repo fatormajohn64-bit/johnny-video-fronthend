@@ -1,6 +1,13 @@
 const mainScreen =
   document.getElementById("main-screen");
 
+
+/*
+|--------------------------------------------------------------------------
+| Pages
+|--------------------------------------------------------------------------
+*/
+
 const pages = {
   home: {
     html: "./pages/home.html",
@@ -27,35 +34,64 @@ const pages = {
   }
 };
 
+
 let currentPage = null;
+let isLoadingPage = false;
+
 
 /*
 |--------------------------------------------------------------------------
-| Load page
+| Load Page
 |--------------------------------------------------------------------------
 */
 
 async function loadPage(pageName) {
+
+  if (!mainScreen) {
+    console.error(
+      "Main screen element #main-screen was not found."
+    );
+
+    return;
+  }
+
+
   const page =
     pages[pageName] || pages.home;
+
 
   const actualPageName =
     pages[pageName]
       ? pageName
       : "home";
 
+
+  /*
+   * Prevent multiple page loads
+   */
+  if (isLoadingPage) {
+    return;
+  }
+
+
+  isLoadingPage = true;
+
+
   try {
+
     /*
-     * Remove previous page CSS
+     * Remove old page CSS
      */
     removePageCss();
 
+
     /*
-     * Load current page CSS
+     * Load new page CSS
      */
     await loadPageCss(
       page.css
     );
+
 
     /*
      * Load page HTML
@@ -63,17 +99,26 @@ async function loadPage(pageName) {
     const response =
       await fetch(page.html);
 
+
     if (!response.ok) {
+
       throw new Error(
-        `Failed to load ${page.html}`
+        `Failed to load ${page.html} (${response.status})`
       );
+
     }
+
 
     const html =
       await response.text();
 
+
+    /*
+     * Put HTML into main screen
+     */
     mainScreen.innerHTML =
       html;
+
 
     /*
      * Load page JavaScript
@@ -82,16 +127,24 @@ async function loadPage(pageName) {
       page.js
     );
 
+
+    /*
+     * Page successfully loaded
+     */
     currentPage =
       actualPageName;
 
+
   } catch (error) {
+
     console.error(
       "Page loading error:",
       error
     );
 
+
     removePageCss();
+
 
     mainScreen.innerHTML = `
       <section class="app-error">
@@ -117,9 +170,20 @@ async function loadPage(pageName) {
           Try Again
         </button>
 
+        <button
+          id="home-button"
+          type="button"
+        >
+          Go Home
+        </button>
+
       </section>
     `;
 
+
+    /*
+     * Retry
+     */
     document
       .getElementById(
         "retry-button"
@@ -127,85 +191,133 @@ async function loadPage(pageName) {
       ?.addEventListener(
         "click",
         () => {
+
           currentPage = null;
 
           loadPage(
             actualPageName
           );
+
         }
       );
+
+
+    /*
+     * Go home
+     */
+    document
+      .getElementById(
+        "home-button"
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+
+          currentPage = null;
+
+          window.location.hash =
+            "home";
+
+        }
+      );
+
+
+  } finally {
+
+    isLoadingPage = false;
+
   }
 }
 
+
 /*
 |--------------------------------------------------------------------------
-| Load page CSS
+| Load Page CSS
 |--------------------------------------------------------------------------
 */
 
 function loadPageCss(path) {
+
   return new Promise(
     (resolve, reject) => {
+
       const link =
         document.createElement(
           "link"
         );
 
+
       link.rel =
         "stylesheet";
+
 
       link.href =
         path;
 
+
       link.dataset.pageCss =
         "true";
+
 
       link.onload = () => {
         resolve();
       };
 
+
       link.onerror = () => {
+
         reject(
           new Error(
             `Failed to load ${path}`
           )
         );
+
       };
+
 
       document.head.appendChild(
         link
       );
+
     }
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
-| Remove page CSS
+| Remove Page CSS
 |--------------------------------------------------------------------------
 */
 
 function removePageCss() {
+
   document
     .querySelectorAll(
       'link[data-page-css="true"]'
     )
-    .forEach(link => {
-      link.remove();
-    });
+    .forEach(
+      link => {
+        link.remove();
+      }
+    );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
-| Load page JavaScript
+| Load Page JavaScript
 |--------------------------------------------------------------------------
 */
 
 async function loadScript(path) {
+
   /*
    * main.js is already inside /js/
    *
-   * Therefore paths are:
+   * So these paths are correct:
    *
    * ./home.js
    * ./generator.js
@@ -213,51 +325,70 @@ async function loadScript(path) {
    * ./editor.js
    */
 
+
   const module =
     await import(
       `${path}?t=${Date.now()}`
     );
 
+
   /*
-   * Home
+   * HOME
    */
+
   if (
     typeof module.initHome ===
     "function"
   ) {
+
     await module.initHome();
+
   }
 
+
   /*
-   * Generator
+   * GENERATOR
    */
+
   if (
     typeof module.initGenerator ===
     "function"
   ) {
+
     await module.initGenerator();
+
   }
 
+
   /*
-   * Result
+   * RESULT
    */
+
   if (
     typeof module.initResult ===
     "function"
   ) {
+
     await module.initResult();
+
   }
 
+
   /*
-   * Editor
+   * EDITOR
    */
+
   if (
     typeof module.initEditor ===
     "function"
   ) {
+
     await module.initEditor();
+
   }
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -266,29 +397,43 @@ async function loadScript(path) {
 */
 
 async function router() {
+
   const hash =
     window.location.hash
       .replace("#", "")
       .trim();
 
+
   const page =
     hash || "home";
 
+
   /*
-   * Don't reload the same page
+   * Ignore invalid navigation
+   *
+   * loadPage() will automatically
+   * fall back to home.
    */
+
   if (
     page === currentPage
   ) {
+
     return;
+
   }
 
-  await loadPage(page);
+
+  await loadPage(
+    page
+  );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
-| Hash navigation
+| Hash Navigation
 |--------------------------------------------------------------------------
 */
 
@@ -297,40 +442,49 @@ window.addEventListener(
   router
 );
 
+
 /*
 |--------------------------------------------------------------------------
-| Start application
+| Start Application
 |--------------------------------------------------------------------------
 */
 
 router();
 
+
 /*
 |--------------------------------------------------------------------------
-| HTML escaping
+| HTML Escaping
 |--------------------------------------------------------------------------
 */
 
 function escapeHtml(value) {
+
   return String(value)
+
     .replaceAll(
       "&",
       "&amp;"
     )
+
     .replaceAll(
       "<",
       "&lt;"
     )
+
     .replaceAll(
       ">",
       "&gt;"
     )
+
     .replaceAll(
       '"',
       "&quot;"
     )
+
     .replaceAll(
       "'",
       "&#039;"
     );
+
 }
