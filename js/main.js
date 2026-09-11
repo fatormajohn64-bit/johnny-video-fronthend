@@ -12,6 +12,12 @@ const pages = {
     html: "./pages/generator.html",
     css: "./css/generator.css",
     js: "./js/generator.js"
+  },
+
+  result: {
+    html: "./pages/result.html",
+    css: "./css/result.css",
+    js: "./js/result.js"
   }
 };
 
@@ -39,7 +45,7 @@ async function loadPage(pageName) {
     removePageCss();
 
     /*
-     * Load page CSS
+     * Load current page CSS
      */
     await loadPageCss(
       page.css
@@ -115,6 +121,8 @@ async function loadPage(pageName) {
       ?.addEventListener(
         "click",
         () => {
+          currentPage = null;
+
           loadPage(
             actualPageName
           );
@@ -129,9 +137,7 @@ async function loadPage(pageName) {
 |--------------------------------------------------------------------------
 */
 
-function loadPageCss(
-  path
-) {
+function loadPageCss(path) {
   return new Promise(
     (resolve, reject) => {
       const link =
@@ -139,8 +145,11 @@ function loadPageCss(
           "link"
         );
 
-      link.rel = "stylesheet";
-      link.href = path;
+      link.rel =
+        "stylesheet";
+
+      link.href =
+        path;
 
       link.dataset.pageCss =
         "true";
@@ -166,7 +175,7 @@ function loadPageCss(
 
 /*
 |--------------------------------------------------------------------------
-| Remove previous page CSS
+| Remove page CSS
 |--------------------------------------------------------------------------
 */
 
@@ -186,16 +195,14 @@ function removePageCss() {
 |--------------------------------------------------------------------------
 */
 
-async function loadScript(
-  path
-) {
+async function loadScript(path) {
   const module =
     await import(
       `${path}?t=${Date.now()}`
     );
 
   /*
-   * Home page
+   * Home
    */
   if (
     typeof module.initHome ===
@@ -205,13 +212,23 @@ async function loadScript(
   }
 
   /*
-   * Generator page
+   * Generator
    */
   if (
     typeof module.initGenerator ===
     "function"
   ) {
     await module.initGenerator();
+  }
+
+  /*
+   * Result
+   */
+  if (
+    typeof module.initResult ===
+    "function"
+  ) {
+    await module.initResult();
   }
 }
 
@@ -231,7 +248,7 @@ async function router() {
     hash || "home";
 
   /*
-   * Avoid reloading the same page
+   * Don't reload the same page
    */
   if (
     page === currentPage
@@ -244,7 +261,7 @@ async function router() {
 
 /*
 |--------------------------------------------------------------------------
-| Hash navigation
+| Navigation
 |--------------------------------------------------------------------------
 */
 
