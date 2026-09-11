@@ -1,0 +1,82 @@
+<section class="result-page">
+
+  <header class="page-header">
+
+    <button
+      id="back-generator"
+      class="back-button"
+      type="button"
+      aria-label="Back"
+    >
+      ←
+    </button>
+
+    <div>
+      <span class="page-label">
+        GENERATED VIDEO
+      </span>
+
+      <h1>
+        Your Video
+      </h1>
+    </div>
+
+  </header>
+
+  <section class="video-preview">
+
+    <video
+      id="generated-video"
+      controls
+      playsinline
+      preload="metadata"
+    ></video>
+
+  </section>
+
+  <section class="result-info">
+
+    <div class="result-row">
+      <span>Generator</span>
+      <strong id="result-generator">
+        —
+      </strong>
+    </div>
+
+    <div class="result-row">
+      <span>Status</span>
+      <strong id="result-status">
+        —
+      </strong>
+    </div>
+
+  </section>
+
+  <section class="result-actions">
+
+    <button
+      id="download-video"
+      class="result-button primary"
+      type="button"
+    >
+      <span>Download Video</span>
+      <span>↓</span>
+    </button>
+
+    <button
+      id="edit-generated-video"
+      class="result-button"
+      type="button"
+    >
+      <span>Edit Video</span>
+      <span>→</span>
+    </button>
+
+  </section>
+
+  <div
+    id="result-message"
+    class="result-message hidden"
+  ></div>
+
+</section>
