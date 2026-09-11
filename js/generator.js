@@ -7,10 +7,24 @@ import {
 let selectedGenerator = null;
 let providerSettings = {};
 
+/*
+|--------------------------------------------------------------------------
+| Initialize
+|--------------------------------------------------------------------------
+*/
+
 export async function initGenerator() {
   setupBackButton();
+  setupGenerateButton();
+
   await loadGenerators();
 }
+
+/*
+|--------------------------------------------------------------------------
+| Back
+|--------------------------------------------------------------------------
+*/
 
 function setupBackButton() {
   document
@@ -18,6 +32,23 @@ function setupBackButton() {
     ?.addEventListener("click", () => {
       window.location.hash = "home";
     });
+}
+
+/*
+|--------------------------------------------------------------------------
+| Generate button
+|--------------------------------------------------------------------------
+*/
+
+function setupGenerateButton() {
+  document
+    .getElementById(
+      "generate-video-button"
+    )
+    ?.addEventListener(
+      "click",
+      handleGenerate
+    );
 }
 
 /*
@@ -55,47 +86,55 @@ async function loadGenerators() {
 
     container.innerHTML =
       generators
-        .map(
-          provider => `
-            <button
-              type="button"
-              class="generator-provider"
-              data-provider="${escapeHtml(
+        .map(provider => `
+          <button
+            type="button"
+            class="generator-provider"
+            data-provider="${escapeHtml(
+              provider.id
+            )}"
+          >
+
+            <span class="generator-provider-icon">
+              ${getProviderIcon(
                 provider.id
-              )}"
-            >
-              <span class="generator-provider-icon">
-                ${getProviderIcon(
-                  provider.id
+              )}
+            </span>
+
+            <span class="generator-provider-info">
+
+              <strong>
+                ${escapeHtml(
+                  provider.name
                 )}
-              </span>
+              </strong>
 
-              <span class="generator-provider-info">
-                <strong>
-                  ${escapeHtml(
-                    provider.name
-                  )}
-                </strong>
+              <small>
+                ${
+                  provider.configured
+                    ? "Ready"
+                    : "Not configured"
+                }
+              </small>
 
-                <small>
-                  ${
-                    provider.configured
-                      ? "Ready"
-                      : "Not configured"
-                  }
-                </small>
-              </span>
+            </span>
 
-              <span class="generator-provider-check">
-                ✓
-              </span>
-            </button>
-          `
-        )
+            <span class="generator-provider-check">
+              ✓
+            </span>
+
+          </button>
+        `)
         .join("");
 
-    setupProviderButtons(generators);
+    setupProviderButtons(
+      generators
+    );
 
+    /*
+     * Automatically select
+     * the first configured provider.
+     */
     const firstReady =
       generators.find(
         provider =>
@@ -124,7 +163,7 @@ async function loadGenerators() {
 
 /*
 |--------------------------------------------------------------------------
-| Provider selection
+| Provider buttons
 |--------------------------------------------------------------------------
 */
 
@@ -136,16 +175,19 @@ function setupProviderButtons(
       ".generator-provider"
     )
     .forEach(button => {
+
       button.addEventListener(
         "click",
         async () => {
+
           const provider =
             button.dataset.provider;
 
           const providerInfo =
             generators.find(
               item =>
-                item.id === provider
+                item.id ===
+                provider
             );
 
           if (
@@ -165,8 +207,15 @@ function setupProviderButtons(
           );
         }
       );
+
     });
 }
+
+/*
+|--------------------------------------------------------------------------
+| Select generator
+|--------------------------------------------------------------------------
+*/
 
 async function selectGenerator(
   provider
@@ -179,11 +228,13 @@ async function selectGenerator(
       ".generator-provider"
     )
     .forEach(button => {
+
       button.classList.toggle(
         "selected",
         button.dataset.provider ===
           provider
       );
+
     });
 
   await loadProviderSettings(
@@ -246,7 +297,7 @@ async function loadProviderSettings(
 
 /*
 |--------------------------------------------------------------------------
-| Render dynamic settings
+| Render settings
 |--------------------------------------------------------------------------
 */
 
@@ -282,6 +333,12 @@ function renderSettings(
       .join("");
 }
 
+/*
+|--------------------------------------------------------------------------
+| Create setting field
+|--------------------------------------------------------------------------
+*/
+
 function createSettingField(
   key,
   config
@@ -289,7 +346,10 @@ function createSettingField(
   const label =
     formatLabel(key);
 
-  if (config.type === "select") {
+  if (
+    config.type ===
+    "select"
+  ) {
     return `
       <div class="provider-setting">
 
@@ -309,7 +369,11 @@ function createSettingField(
             key
           )}"
         >
-          ${config.options
+
+          ${(
+            config.options ||
+            []
+          )
             .map(
               option => `
                 <option
@@ -330,13 +394,17 @@ function createSettingField(
               `
             )
             .join("")}
+
         </select>
 
       </div>
     `;
   }
 
-  if (config.type === "number") {
+  if (
+    config.type ===
+    "number"
+  ) {
     return `
       <div class="provider-setting">
 
@@ -357,15 +425,18 @@ function createSettingField(
           )}"
           type="number"
           value="${
-            config.default ?? ""
+            config.default ??
+            ""
           }"
           ${
-            config.min !== undefined
+            config.min !==
+            undefined
               ? `min="${config.min}"`
               : ""
           }
           ${
-            config.max !== undefined
+            config.max !==
+            undefined
               ? `max="${config.max}"`
               : ""
           }
@@ -375,7 +446,10 @@ function createSettingField(
     `;
   }
 
-  if (config.type === "boolean") {
+  if (
+    config.type ===
+    "boolean"
+  ) {
     return `
       <div class="provider-setting">
 
@@ -418,7 +492,8 @@ function createSettingField(
           key
         )}"
         type="${
-          config.type === "url"
+          config.type ===
+          "url"
             ? "url"
             : "text"
         }"
@@ -442,22 +517,9 @@ function createSettingField(
 
 /*
 |--------------------------------------------------------------------------
-| Generate
+| Generate video
 |--------------------------------------------------------------------------
 */
-
-document.addEventListener(
-  "click",
-  event => {
-    if (
-      event.target.closest(
-        "#generate-video-button"
-      )
-    ) {
-      handleGenerate();
-    }
-  }
-);
 
 async function handleGenerate() {
   const promptInput =
@@ -504,29 +566,61 @@ async function handleGenerate() {
   );
 
   try {
-    const result =
+
+    const response =
       await generateVideo({
         generator:
           selectedGenerator,
+
         prompt,
+
         input
       });
 
     console.log(
-      "Generation result:",
-      result
+      "Generation response:",
+      response
     );
 
-    showStatus(
-      "Video generation completed.",
-      "success"
+    /*
+     * Save the complete response
+     * for the result page.
+     */
+    const videoUrl =
+      extractVideoUrl(
+        response
+      );
+
+    if (!videoUrl) {
+      throw new Error(
+        "Generation completed, but no usable video URL was returned."
+      );
+    }
+
+    sessionStorage.setItem(
+      "johnny-generated-video",
+      JSON.stringify({
+        generator:
+          selectedGenerator,
+
+        status:
+          "Completed",
+
+        videoUrl,
+
+        result:
+          response
+      })
     );
 
-    handleGenerationResult(
-      result
-    );
+    /*
+     * Open result page.
+     */
+    window.location.hash =
+      "result";
 
   } catch (error) {
+
     console.error(
       "Generation failed:",
       error
@@ -557,6 +651,7 @@ function collectSettings() {
       "[data-setting]"
     )
     .forEach(field => {
+
       const key =
         field.dataset.setting;
 
@@ -578,7 +673,9 @@ function collectSettings() {
           field.value !== ""
         ) {
           input[key] =
-            Number(field.value);
+            Number(
+              field.value
+            );
         }
 
         return;
@@ -590,6 +687,7 @@ function collectSettings() {
         input[key] =
           field.value;
       }
+
     });
 
   return input;
@@ -597,23 +695,32 @@ function collectSettings() {
 
 /*
 |--------------------------------------------------------------------------
-| Generation result
+| Extract video URL
 |--------------------------------------------------------------------------
 */
 
-function handleGenerationResult(
-  result
+function extractVideoUrl(
+  response
 ) {
-  console.log(
-    "Generated video:",
-    result?.result
-  );
+  return (
+    response?.result?.data?.video?.url ||
 
-  /*
-   * We will connect this to the
-   * video preview/download screen
-   * in a later step.
-   */
+    response?.result?.data?.video_url ||
+
+    response?.result?.video?.url ||
+
+    response?.result?.video_url ||
+
+    response?.data?.video?.url ||
+
+    response?.data?.video_url ||
+
+    response?.video?.url ||
+
+    response?.video_url ||
+
+    null
+  );
 }
 
 /*
@@ -639,7 +746,9 @@ function showStatus(
     "generation-status";
 
   if (type) {
-    status.classList.add(type);
+    status.classList.add(
+      type
+    );
   }
 
   status.textContent =
@@ -656,7 +765,10 @@ function formatLabel(
   value
 ) {
   return value
-    .replaceAll("_", " ")
+    .replaceAll(
+      "_",
+      " "
+    )
     .replace(
       /([a-z])([A-Z])/g,
       "$1 $2"
@@ -672,6 +784,7 @@ function getProviderIcon(
   provider
 ) {
   switch (provider) {
+
     case "kling":
       return "🎥";
 
@@ -683,12 +796,26 @@ function getProviderIcon(
   }
 }
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
     .replaceAll(
       "'",
       "&#039;"
