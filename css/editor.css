@@ -1,0 +1,536 @@
+/*
+|--------------------------------------------------------------------------
+| Editor Page
+|--------------------------------------------------------------------------
+*/
+
+.editor-page {
+  width: 100%;
+  min-height: 100dvh;
+
+  max-width: 520px;
+  margin: 0 auto;
+
+  padding: 24px 20px 32px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Header
+|--------------------------------------------------------------------------
+*/
+
+.page-header {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.back-button {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  font-size: 21px;
+}
+
+.back-button:hover {
+  background: var(--bg-card-hover);
+}
+
+.back-button:active {
+  transform: scale(0.94);
+}
+
+.page-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+}
+
+.page-header h1 {
+  font-size: 25px;
+  line-height: 1.1;
+
+  letter-spacing: -0.6px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Editor Sections
+|--------------------------------------------------------------------------
+*/
+
+.editor-section {
+  margin-bottom: 26px;
+}
+
+.section-title {
+  display: block;
+
+  margin-bottom: 11px;
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Video Source
+|--------------------------------------------------------------------------
+*/
+
+.video-source {
+  width: 100%;
+
+  min-height: 190px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  margin-bottom: 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 17px;
+
+  background: #000;
+}
+
+.video-source video {
+  display: block;
+
+  width: 100%;
+  max-height: 60dvh;
+
+  background: #000;
+}
+
+.video-source-empty {
+  padding: 30px 20px;
+
+  color: var(--text-muted);
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Choose Video Button
+|--------------------------------------------------------------------------
+*/
+
+.secondary-button {
+  width: 100%;
+
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.secondary-button:hover {
+  background: var(--bg-card-hover);
+}
+
+.secondary-button:active {
+  transform: scale(0.98);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Editor Providers
+|--------------------------------------------------------------------------
+*/
+
+.editor-providers {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.editor-provider {
+  width: 100%;
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  text-align: left;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.editor-provider:hover {
+  background: var(--bg-card-hover);
+}
+
+.editor-provider:active {
+  transform: scale(0.98);
+}
+
+.editor-provider.selected {
+  border-color:
+    rgba(255, 255, 255, 0.35);
+
+  background:
+    var(--bg-card-hover);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Provider Icon
+|--------------------------------------------------------------------------
+*/
+
+.editor-provider-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background: var(--bg-secondary);
+
+  font-size: 19px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Provider Information
+|--------------------------------------------------------------------------
+*/
+
+.editor-provider-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 12px;
+}
+
+.editor-provider-info strong {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.editor-provider-info small {
+  margin-top: 4px;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Provider Check
+|--------------------------------------------------------------------------
+*/
+
+.editor-provider-check {
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  margin-left: auto;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  color: transparent;
+
+  font-size: 12px;
+}
+
+.editor-provider.selected
+.editor-provider-check {
+  border-color: var(--text-primary);
+
+  background: var(--text-primary);
+
+  color: var(--bg-primary);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dynamic Editor Settings
+|--------------------------------------------------------------------------
+*/
+
+#editor-settings {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Individual Setting
+|--------------------------------------------------------------------------
+*/
+
+.provider-setting {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.provider-setting label {
+  color: var(--text-secondary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Inputs
+|--------------------------------------------------------------------------
+*/
+
+.provider-setting input,
+.provider-setting select,
+.provider-setting textarea {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  outline: none;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  font-size: 13px;
+}
+
+.provider-setting textarea {
+  min-height: 100px;
+
+  padding-top: 13px;
+  padding-bottom: 13px;
+
+  resize: vertical;
+}
+
+.provider-setting input:focus,
+.provider-setting select:focus,
+.provider-setting textarea:focus {
+  border-color:
+    rgba(255, 255, 255, 0.25);
+}
+
+.provider-setting select {
+  cursor: pointer;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Checkbox
+|--------------------------------------------------------------------------
+*/
+
+.provider-setting input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+
+  min-height: 22px;
+
+  padding: 0;
+
+  cursor: pointer;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Render Button
+|--------------------------------------------------------------------------
+*/
+
+.render-button {
+  width: 100%;
+
+  min-height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 18px;
+
+  border-radius: 16px;
+
+  background: var(--text-primary);
+  color: var(--bg-primary);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.render-button:active {
+  transform: scale(0.98);
+}
+
+.render-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Editor Status
+|--------------------------------------------------------------------------
+*/
+
+.editor-status {
+  margin-top: 18px;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.editor-status.success {
+  color: #8ee6a8;
+}
+
+.editor-status.error {
+  color: var(--danger);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Provider Error
+|--------------------------------------------------------------------------
+*/
+
+.provider-error {
+  width: 100%;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Hidden
+|--------------------------------------------------------------------------
+*/
+
+.hidden {
+  display: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Mobile
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width: 380px) {
+
+  .editor-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+  .video-source {
+    min-height: 160px;
+  }
+
+}
