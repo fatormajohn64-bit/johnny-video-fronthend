@@ -6,6 +6,7 @@
 const API_BASE_URL =
   "https://j-tec-video-production-backend.onrender.com";
 
+
 /*
 |--------------------------------------------------------------------------
 | Generic API request
@@ -16,6 +17,7 @@ async function request(
   endpoint,
   options = {}
 ) {
+
   const response = await fetch(
     `${API_BASE_URL}${endpoint}`,
     {
@@ -28,24 +30,32 @@ async function request(
     }
   );
 
+
   const contentType =
     response.headers.get("content-type") || "";
+
 
   const data =
     contentType.includes("application/json")
       ? await response.json()
       : await response.text();
 
+
   if (!response.ok) {
+
     throw new Error(
       data?.message ||
       data?.error ||
       `Request failed: ${response.status}`
     );
+
   }
 
+
   return data;
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -54,8 +64,13 @@ async function request(
 */
 
 export async function checkHealth() {
-  return request("/api/health");
+
+  return request(
+    "/api/health"
+  );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -64,8 +79,13 @@ export async function checkHealth() {
 */
 
 export async function getProviders() {
-  return request("/api/providers");
+
+  return request(
+    "/api/providers"
+  );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +98,7 @@ export async function generateVideo({
   prompt,
   input = {}
 }) {
+
   return request(
     "/api/video/generate",
     {
@@ -90,7 +111,9 @@ export async function generateVideo({
       })
     }
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +126,7 @@ export async function editVideo({
   videoUrl,
   settings = {}
 }) {
+
   return request(
     "/api/video/edit",
     {
@@ -115,7 +139,9 @@ export async function editVideo({
       })
     }
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +156,7 @@ export async function generateAndEditVideo({
   generationInput = {},
   edit = {}
 }) {
+
   return request(
     "/api/video/generate-and-edit",
     {
@@ -144,7 +171,9 @@ export async function generateAndEditVideo({
       })
     }
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -155,10 +184,13 @@ export async function generateAndEditVideo({
 export async function getProviderSettings(
   provider
 ) {
+
   return request(
     `/api/settings/${encodeURIComponent(provider)}`
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -172,6 +204,7 @@ export async function createUploadUrl({
   contentType,
   size
 }) {
+
   return request(
     "/api/upload/url",
     {
@@ -185,7 +218,9 @@ export async function createUploadUrl({
       })
     }
   );
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -196,10 +231,47 @@ export async function createUploadUrl({
 export async function getShotstackUploadStatus(
   id
 ) {
+
   return request(
     `/api/upload/shotstack/${encodeURIComponent(id)}`
   );
+
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| JSON2Video render status
+|--------------------------------------------------------------------------
+*/
+
+export async function getJson2VideoRender(
+  projectId
+) {
+
+  return request(
+    `/api/editors/json2video/render/${encodeURIComponent(projectId)}`
+  );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Shotstack render status
+|--------------------------------------------------------------------------
+*/
+
+export async function getShotstackRender(
+  renderId
+) {
+
+  return request(
+    `/api/editors/shotstack/render/${encodeURIComponent(renderId)}`
+  );
+
+}
+
 
 /*
 |--------------------------------------------------------------------------
